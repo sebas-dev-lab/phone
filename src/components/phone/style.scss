@@ -1,0 +1,206 @@
+.SocialSharing__link {
+    border: none;
+    padding: 0;
+
+    &:focus {
+        outline: 0;
+        box-shadow: none;
+    }
+}
+
+.call-hang i {
+    color: #eb7244;
+    position: relative;
+}
+
+.call-dial i {
+    color: #0097a7;
+}
+
+.call-dial.is-animating {
+    animation: phone-outer 3000ms infinite;
+
+    &::after {
+        animation: phone-icon 3000ms infinite;
+    }
+}
+
+.call-dial.call-dial.is-animating i {
+    animation: ringing 2000ms infinite;
+}
+
+@keyframes rotate-phone {
+    0% {
+        transform: translate(0deg, 0deg);
+    }
+    50% {
+        transform: translate(45deg, 0deg);
+    }
+    100% {
+        transform: translate(0deg, 0deg);
+    }
+}
+
+@keyframes phone-outer {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    33.3333% {
+        transform: translate3d(0, 0, 0) scale(1.3);
+    }
+    66.6666% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@keyframes phone-inner {
+    0% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(0);
+    }
+    33.3333% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(0.9);
+    }
+    66.6666% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) scale(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) scale(0);
+    }
+}
+
+@keyframes phone-icon {
+    0% {
+        transform: translate3d(0em, 0, 0);
+    }
+    2% {
+        transform: translate3d(0.01em, 0, 0);
+    }
+    4% {
+        transform: translate3d(-0.01em, 0, 0);
+    }
+    6% {
+        transform: translate3d(0.01em, 0, 0);
+    }
+    8% {
+        transform: translate3d(-0.01em, 0, 0);
+    }
+    10% {
+        transform: translate3d(0.01em, 0, 0);
+    }
+    12% {
+        transform: translate3d(-0.01em, 0, 0);
+    }
+    14% {
+        transform: translate3d(0.01em, 0, 0);
+    }
+    16% {
+        transform: translate3d(-0.01em, 0, 0);
+    }
+    18% {
+        transform: translate3d(0.01em, 0, 0);
+    }
+    20% {
+        transform: translate3d(-0.01em, 0, 0);
+    }
+    22% {
+        transform: translate3d(0.01em, 0, 0);
+    }
+    24% {
+        transform: translate3d(-0.01em, 0, 0);
+    }
+    26% {
+        transform: translate3d(0.01em, 0, 0);
+    }
+    28% {
+        transform: translate3d(-0.01em, 0, 0);
+    }
+    30% {
+        transform: translate3d(0.01em, 0, 0);
+    }
+    32% {
+        transform: translate3d(-0.01em, 0, 0);
+    }
+    34% {
+        transform: translate3d(0.01em, 0, 0);
+    }
+    36% {
+        transform: translate3d(-0.01em, 0, 0);
+    }
+    38% {
+        transform: translate3d(0.01em, 0, 0);
+    }
+    40% {
+        transform: translate3d(-0.01em, 0, 0);
+    }
+    42% {
+        transform: translate3d(0.01em, 0, 0);
+    }
+    44% {
+        transform: translate3d(-0.01em, 0, 0);
+    }
+    46% {
+        transform: translate3d(0em, 0, 0);
+    }
+}
+
+@keyframes ringing {
+    0% {
+    }
+    10% {
+        -webkit-transform: rotate(5deg);
+        -moz-transform: rotate(5deg);
+        -o-transform: rotate(5deg);
+    }
+    20% {
+        -webkit-transform: rotate(-5deg);
+        -moz-transform: rotate(-5deg);
+        -o-transform: rotate(-5deg);
+    }
+    30% {
+        -webkit-transform: rotate(5deg);
+        -moz-transform: rotate(5deg);
+        -o-transform: rotate(5deg);
+    }
+    40% {
+        -webkit-transform: rotate(-5deg);
+        -moz-transform: rotate(-5deg);
+        -o-transform: rotate(-5deg);
+    }
+    50% {
+        -webkit-transform: rotate(5deg);
+        -moz-transform: rotate(5deg);
+        -o-transform: rotate(5deg);
+    }
+    60% {
+        -webkit-transform: rotate(-5deg);
+        -moz-transform: rotate(-5deg);
+        -o-transform: rotate(-5deg);
+    }
+    70% {
+        -webkit-transform: rotate(5deg);
+        -moz-transform: rotate(5deg);
+        -o-transform: rotate(5deg);
+    }
+    80% {
+        -webkit-transform: rotate(-5deg);
+        -moz-transform: rotate(-5deg);
+        -o-transform: rotate(-5deg);
+    }
+    90% {
+        -webkit-transform: rotate(5deg);
+        -moz-transform: rotate(5deg);
+        -o-transform: rotate(5deg);
+    }
+    100% {
+        -webkit-transform: rotate(-5deg);
+        -moz-transform: rotate(-5deg);
+        -o-transform: rotate(-5deg);
+    }
+}
