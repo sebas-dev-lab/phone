@@ -4,7 +4,7 @@ import ring from "../../sound/ringing.mp3";
 import "./style.scss";
 
 import SipEvent from "./SipEvents";
-import { userAgentSettings } from "../../helpers/webphone";
+import { userAgentSettings } from "../helpers/webphone";
 import PhoneTags from "./PhoneTags";
 import Events from "./EventsTimer";
 

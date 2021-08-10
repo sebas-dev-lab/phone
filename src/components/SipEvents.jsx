@@ -1,7 +1,7 @@
 import { UserAgent, Inviter, SessionState } from "sip.js";
-import { SE_ST_ACCEPTED, SE_ST_TERMINATED } from "../../helpers/webphone";
-import { extractDomain, plugAudio } from "../../helpers/webphone";
-import env from "../../config/config";
+import { SE_ST_ACCEPTED, SE_ST_TERMINATED } from "../helpers/webphone";
+import { extractDomain, plugAudio } from "../helpers/webphone";
+import env from "../config/config";
 
 const SipEvents = ({
   phone,

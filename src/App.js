@@ -1,5 +1,4 @@
-import "./App.scss";
-import WebPhone from "./components/phone/WebPhone";
+import WebPhone from "./components/WebPhone";
 
 function App() {
   return (
