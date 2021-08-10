@@ -1,3 +1,4 @@
+import env from "../config/config";
 /*  
 CONSTANTS
 
@@ -16,6 +17,22 @@ export const SE_ST_FAILED = "failed";
 export const SE_ST_REJECTED = "rejected";
 export const SE_ST_BYE = "bye";
 export const SE_ST_DTMF = "dtmf";
+
+
+/*
+    USER AGENT SETTINGS
+*/
+
+export const userAgentSettings = {
+  sipServer: env.SIP_SERVER,
+  authorizationUser: env.AUTHORIZATION_USER,
+  password: env.AUTHORIZATION_PASSWORD,
+  displayName: env.DISPLAY_NAME,
+  userAgentString: env.USER_AGENT,
+  stunServers: env.STUN_SERVERS,
+  logLevel: env.LOG_LEVEL,
+};
+
 
 /*
     AUXILIAR FUNCTIONS

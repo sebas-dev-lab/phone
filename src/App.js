@@ -1,10 +1,10 @@
 import "./App.scss";
-import Phone from "./components/phone/phone";
+import WebPhone from "./components/phone/WebPhone";
 
 function App() {
   return (
     <div className="App">
-      <Phone />
+      <WebPhone />
     </div>
   );
 }
