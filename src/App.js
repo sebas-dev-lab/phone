@@ -4,7 +4,7 @@ import Phone from "./components/phone/phone";
 function App() {
   return (
     <div className="App">
-      <Phone />sadssss
+      <Phone />
     </div>
   );
 }

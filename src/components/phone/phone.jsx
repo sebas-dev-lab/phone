@@ -1,7 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import env from "../../config/config";
-// import { Web, Inviter, SessionState, UserAgent } from "sip.js";
-import { UserAgent, Inviter, SessionState, Web } from "sip.js";
+import {
+  UserAgent,
+  Inviter,
+  SessionState,
+  Web,
+  Registerer,
+  Session,
+} from "sip.js";
 import { extractDomain, plugAudio } from "../../helpers/phoneSip";
 import {
   PH_ST_DISCONNECTED,
@@ -19,6 +25,10 @@ import {
   SE_ST_DTMF,
 } from "../../helpers/phoneSip";
 import "./style.scss";
+import useSound from "use-sound";
+import ring from "../../sound/ringing.mp3";
+import { PhoneOutlined, CloseOutlined } from "@ant-design/icons";
+import Timer from "./timer";
 
 const Phone = () => {
   const [phone, setPhone] = useState(null);
@@ -28,13 +38,10 @@ const Phone = () => {
   const [callState, setCallState] = useState("");
   const [original_avatar, setOriginalAvatar] = useState("");
   const [number, setNumber] = useState("");
-  const [play, setPlay] = useState(true);
-  let audioRef = useRef();
-  let audio = new Audio("./ringing.mp3");
-  function focusAudio() {
-    audioRef.current.focus();
-  }
-  console.log(audio);
+  const [ringing, setRinging] = useState(false);
+  const [callDuration, setCallDuration] = useState(0);
+  const [time, setTime] = useState({});
+  const [play, { stop }] = useSound(ring);
 
   /*
     createPhone \\funcion usada en phone
@@ -45,12 +52,12 @@ const Phone = () => {
   /*  Configuracion inicial  */
   function createPhone(conf) {
     const userAgent = new UserAgent({
-      password: conf.password,
+      authorizationPassword: conf.password,
       authorizationUser: conf.authorizationUser,
       displayName: conf.displayName,
       userAgentString: conf.userAgentString,
       uri: UserAgent.makeURI(
-        `sip:${conf.authorizationUser}@${extractDomain(conf.sipServer)}`
+        `sip:${conf.authorizationUser}@${extractDomain(conf.sipServer)}:8089`
       ),
       transportOptions: {
         wsServers: [conf.sipServer],
@@ -78,83 +85,36 @@ const Phone = () => {
 
   function hang(e) {
     e.preventDefault();
-    session.terminate();
+    switch (session.state) {
+      case SessionState.Initial:
+      case SessionState.Establishing:
+        if (session) {
+          // An unestablished outgoing session
+          session.cancel();
+        } else {
+          // An unestablished incoming session
+          session.reject();
+        }
+        break;
+      case SessionState.Established:
+        // An established session
+        session.bye();
+        break;
+      case SessionState.Terminating:
+      case SessionState.Terminated:
+        // Cannot terminate a session that is already terminated
+        break;
+    }
   }
 
-  let togglePlay = () => {
-    const audioEl = document.getElementsByClassName("audio-element")[0];
-    if (play) {
-      audioEl
-        .play()
-        .then(() => {})
-        .catch((e) => {
-          console.log(e);
-        });
-
-      // audio.play().catch((error) => {
-      //  when an exception is played, the exception flow is followed
-      // });
-    } else {
-      // audio.pause();
-      audioEl.pause();
-    }
-  };
-
   function dial(e, dialCall) {
+    // setPlay(true);
     e.preventDefault();
+
     phone.start().then(() => {
       // Set target destination (callee)
 
-      const target = UserAgent.makeURI(
-        `sip:${env.AUTHORIZATION_USER}@${extractDomain(env.SIP_SERVER)}`
-      );
-      if (!target) {
-        throw new Error("Failed to create target URI.");
-      }
-      // Create a user agent client to establish a session
-      const inviter = new Inviter(phone, target, {
-        sessionDescriptionHandlerOptions: {
-          constraints: { audio: true, video: false },
-        },
-      });
-      setSession(inviter);
-      console.log(session);
       // Handle outgoing session state changes
-      session &&
-        session.stateChange.addListener((newState) => {
-          console.log(newState);
-          // let audio = audioRef.current;
-          switch (newState) {
-            case SessionState.Establishing:
-              // Session is establishing
-              setInCall(true);
-              setCallState("Calling");
-              setPlay(true);
-              togglePlay();
-              console.log(play);
-              alert("stop");
-              break;
-            case SessionState.Established:
-              // Session has been established
-              plugAudio(session.sessionDescriptionHandler.peerConnection);
-              setCallState(SE_ST_ACCEPTED);
-              setPlay(false);
-              togglePlay();
-              break;
-            case SessionState.Terminated:
-              // Session has terminated
-              setInCall(false);
-              setCallState(SE_ST_TERMINATED);
-              setPlay(false);
-              togglePlay();
-              setTimeout(() => {
-                setCallState("");
-              }, 3000);
-              break;
-            default:
-              break;
-          }
-        });
 
       // Send initial INVITE request
       session &&
@@ -182,19 +142,98 @@ const Phone = () => {
         logLevel: env.LOG_LEVEL,
       })
     );
-    togglePlay();
-    if (phone) {
-      // Connect the user agent
-    }
+    // Connect the user agent
   }, []);
 
   useEffect(() => {
-    audio.addEventListener("ended", () => setPlay(false));
+    session &&
+      session.stateChange.addListener((newState) => {
+        switch (newState) {
+          case SessionState.Initial:
 
-    return () => audio.removeEventListener("ended", () => setPlay(false));
-  }, []);
+          case SessionState.Establishing:
+            // Session is establishing
+            setInCall(true);
+            setRinging(true);
+            setCallState("Calling");
+            // togglePlay();
+            console.log(inCall);
+            alert("stop");
+            break;
+          case SessionState.Established:
+            // Session has been established
+            setCallState(SE_ST_ACCEPTED);
+            plugAudio(session.sessionDescriptionHandler.peerConnection);
+            // togglePlay();
+            setRinging(false);
+            break;
+          case SessionState.Terminated:
+            // Session has terminated
+            setCallState(SE_ST_TERMINATED);
+            setInCall(false);
+            setRinging(false);
+            // togglePlay();
+            setTimeout(() => {
+              setCallState("");
+            }, 3000);
+            break;
+          default:
+            break;
+        }
+      });
+  }, [session]);
 
-  console.log(phone);
+  useEffect(() => {
+    if (phone) {
+      const target = UserAgent.makeURI(
+        `sip:*600@${extractDomain(env.SIP_SERVER)}:8089`
+      );
+      if (!target) {
+        throw new Error("Failed to create target URI.");
+      }
+      // Create a user agent client to establish a session
+      const inviter = new Inviter(phone, target, {
+        sessionDescriptionHandlerOptions: {
+          constraints: { audio: true, video: false },
+        },
+      });
+      setSession(inviter);
+    }
+  }, [phone]);
+
+  useEffect(() => {
+    if (ringing) {
+      play();
+    } else {
+      stop();
+    }
+  }, [ringing]);
+
+  function countTime() {
+    if (SessionState.Established === '"Established"') {
+      alert("entro");
+      let seconds = callDuration + 1;
+      setTime(timer(seconds));
+    } else {
+      setCallDuration(0);
+      setTime(timer(callDuration));
+    }
+  }
+  function timer() {
+    let divisor = callDuration % (60 * 60);
+    let minutes = Math.floor(divisor / 60);
+    let seconds_divisor = divisor % 60;
+    let seconds = Math.ceil(seconds_divisor);
+    let obj = {
+      m: minutes,
+      s: seconds,
+    };
+    return obj;
+  }
+
+  useEffect(() => {
+    countTime();
+  }, [SessionState]);
 
   return (
     <div>
@@ -212,20 +251,22 @@ const Phone = () => {
           }
           onClick={(e) => hang(e)}
         >
-          C<i className="fas fa-phone"></i>
+          <CloseOutlined />
         </button>
       ) : (
         <button
           className="SocialSharing__link call-dial is-animating"
           onClick={(e) => dial(e, number)}
         >
-          LL
-          <i className="fas fa-phone"></i>
+          <PhoneOutlined />
         </button>
       )}
-      <audio className="audio-element">
-        <source src="webphone_react/src/components/phone/ringing.mp3"></source>
-      </audio>
+      {/* <p>{`${time.m}:${time.s}`}</p> */}
+      <Timer />
+
+      {/* <audio className="audio-element">
+        <source src="https://www.elongsound.com/images/mp3/triangulol_loop_140_2.mp3"></source>
+      </audio> */}
       {/* <audio
         style={{ display: "none !important" }}
         ref={audioRef}
