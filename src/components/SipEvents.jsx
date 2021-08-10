@@ -12,9 +12,29 @@ const SipEvents = ({
   start,
   stopTime,
   reset,
-  setSession
+  setSession,
 }) => {
-  /*  Configuracion inicial  */
+  /**
+ * SipEvente=> maneja la logica de sip.js. Para usarala es necesario pasar por props un objeto con las siguientes variables={
+ *  phone, -> Se crea la el objeto UserAgent
+    session, -> Maneja las sesiones de llamada
+    setSession -> Setea la session
+    setInCall, -> Booleano que establece el inicio de llamada
+    setCallState, -> deprecado
+    start, -> variable proveniente de Events (timer) - setea el inicio del cotador
+    stopTime, -> Idem start - setea el fin del contador
+    reset, -> Idem Start - resetea el contador al finalizar la llamada
+    setRinging, -> Setea el inicio del sonido de llamada
+ * }
+
+    Retorna funciones={
+      createPhone: Crea el objeto userAgent
+      onConnect: Se connecta al crearse el objeto UserAgent y setear en phone
+      onDial: Establece la coneccion al crearse la session
+      dial: Da lugar al inicio de la llamada 
+      hang: finaliza la session y la llamada
+    }
+*/
 
   return {
     createPhone(conf) {
