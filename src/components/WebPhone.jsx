@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useSound from "use-sound";
-import ring from "../../sound/ringing.mp3";
+import ring from "../sound/ringing.mp3";
 import "./style.scss";
 
 import SipEvent from "./SipEvents";
